@@ -1,0 +1,22 @@
+just a little api client I whipped up for interacting with PAS
+Poker Affiliate Solutions API v3
+
+Requirements:
+
+  * libopenssl-ruby (you prob have this)
+  * rexml (prob. have this as well)
+
+Get an Auth Token:
+-----------------------
+pas = Pas.new
+pas.authtoken(123456)
+
+Show Member Info:
+-------------------
+pas = Pas.new
+pas.show_member(123456)
+
+Get Member List (can take a while if your list is big ;)
+-----------------------------
+pas = Pas.new
+pas.memberlist
