@@ -62,7 +62,7 @@ class Pas
     sig = create_sig(API_ACCESS_KEY, API_TOKEN, 'GET', uri, timestamp)
     url = "http://publisher.pokeraffiliatesolutions.com"+uri+"?"+"api_token=#{API_TOKEN}&timestamp=#{timestamp}&signature=#{sig}"
     puts url
-    xml = Net::HTTP.get_print URI.parse(url)
+    xml = Net::HTTP.get URI.parse(url)
   end
 
   def show_member(memberid)
@@ -72,7 +72,7 @@ class Pas
     sig = create_sig(API_ACCESS_KEY, API_TOKEN, 'GET', uri, timestamp)
     url = "http://publisher.pokeraffiliatesolutions.com"+uri+"?"+"api_token=#{API_TOKEN}&timestamp=#{timestamp}&signature=#{sig}"
     puts url
-    xml = Net::HTTP.get_print URI.parse(url)
+    xml = Net::HTTP.get URI.parse(url)
   end
 
 end
