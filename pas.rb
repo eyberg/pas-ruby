@@ -1,4 +1,5 @@
 require 'net/http'
+require 'net/https'
 require 'base64'
 require 'cgi'
 require 'openssl'
@@ -43,7 +44,8 @@ class Pas
     sig = create_sig(API_ACCESS_KEY, API_TOKEN, 'POST', uri, timestamp)
     path = uri+"?"+"api_token=#{API_TOKEN}&timestamp=#{timestamp}&signature=#{sig}"
 
-    http = Net::HTTP.new("publisher.pokeraffiliatesolutions.com", 80)
+    http = Net::HTTP.new("publisher.pokeraffiliatesolutions.com", 443)
+    http.use_ssl = true
     data = "<member_id>#{memberid}</member_id>"
     headers = { 'Content-Type' => 'text/xml' }
 
@@ -52,7 +54,11 @@ class Pas
     doc = REXML::Document.new xml
     token = REXML::XPath.first(doc, "remote_auth_token/")
 
-    token.text
+    if token.nil? then
+      Raise NoToken
+    else
+      token.text
+    end
   end
 
   def memberlist
@@ -61,8 +67,7 @@ class Pas
 
     sig = create_sig(API_ACCESS_KEY, API_TOKEN, 'GET', uri, timestamp)
     url = "http://publisher.pokeraffiliatesolutions.com"+uri+"?"+"api_token=#{API_TOKEN}&timestamp=#{timestamp}&signature=#{sig}"
-    puts url
-    xml = Net::HTTP.get URI.parse(url)
+    xml = Net::HTTP.get_print URI.parse(url)
   end
 
   def show_member(memberid)
@@ -70,9 +75,13 @@ class Pas
     timestamp = gen_timestamp
 
     sig = create_sig(API_ACCESS_KEY, API_TOKEN, 'GET', uri, timestamp)
-    url = "http://publisher.pokeraffiliatesolutions.com"+uri+"?"+"api_token=#{API_TOKEN}&timestamp=#{timestamp}&signature=#{sig}"
-    puts url
-    xml = Net::HTTP.get URI.parse(url)
+    url = "http://publisher.pokeraffiliatesolutions.com"+uri
+    params = "?"+"api_token=#{API_TOKEN}&timestamp=#{timestamp}&signature=#{sig}"
+    http = Net::HTTP.new(URI.parse(url).host,443)
+    req = Net::HTTP::Get.new(URI.parse(url).path + params)
+    http.use_ssl = true
+    response = http.request(req) 
+    return response.body
   end
 
 end
